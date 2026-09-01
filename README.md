@@ -25,17 +25,24 @@ O sistema simula uma plataforma de gerenciamento de criptoativos, permitindo:
 Voltz - Sprint 4/
 ├── com/voltz/
 │   ├── Main.java              # Ponto de entrada da aplicação
+│   ├── DemoCriptoAtivoBD.java # Demonstração do CRUD de CriptoAtivo no banco
 │   ├── sources.txt            # Lista de fontes para compilação
-│   └── model/
-│       ├── Pessoa.java        # Classe base (nome, email)
-│       ├── Usuario.java       # Herda de Pessoa; login, permissão, empresa
-│       ├── Empresa.java       # Nome, CNPJ e lista de carteiras
-│       ├── Carteira.java      # Agrupa ativos e transações
-│       ├── CriptoAtivo.java   # Nome, símbolo, quantidade, valor
-│       ├── Transacao.java     # Entidade associativa (Usuario + CriptoAtivo)
-│       ├── Permissao.java     # Enum de níveis de acesso
-│       ├── Autenticacao.java  # Validação de login
-│       └── Relatorio.java     # Geração de relatórios (polimorfismo)
+│   ├── model/
+│   │   ├── Pessoa.java        # Classe base (nome, email)
+│   │   ├── Usuario.java       # Herda de Pessoa; login, permissão, empresa
+│   │   ├── Empresa.java       # Nome, CNPJ e lista de carteiras
+│   │   ├── Carteira.java      # Agrupa ativos e transações
+│   │   ├── CriptoAtivo.java   # Id, nome, símbolo, quantidade, valor
+│   │   ├── Transacao.java     # Entidade associativa (Usuario + CriptoAtivo)
+│   │   ├── Permissao.java     # Enum de níveis de acesso
+│   │   ├── Autenticacao.java  # Validação de login
+│   │   └── Relatorio.java     # Geração de relatórios (polimorfismo)
+│   ├── db/
+│   │   └── ConexaoBD.java     # Conexão JDBC com o banco SQLite (voltz.db)
+│   └── dao/
+│       └── CriptoAtivoDAO.java # CRUD de CriptoAtivo (inserir/atualizar/excluir/listar)
+├── lib/
+│   └── sqlite-jdbc-*.jar      # Driver JDBC do SQLite
 ├── docs/
 │   ├── Dicionário de Dados.pdf                                        # Descrição de cada atributo/tabela do modelo
 │   ├── Normalização de Dados.pdf                                      # Justificativa das formas normais aplicadas (1FN–3FN)
@@ -47,10 +54,11 @@ Voltz - Sprint 4/
 
 ## ⚙️ Tecnologias Utilizadas
 
-* Java (Collections, `java.time`, `java.io`)
+* Java (Collections, `java.time`, `java.io`, JDBC)
 * Programação Orientada a Objetos (POO)
 * Modelagem ER e Modelo Relacional
 * Oracle Data Modeler
+* SQLite (banco de dados da integração JDBC)
 
 ---
 
@@ -83,6 +91,17 @@ Voltz - Sprint 4/
 
 * `gravarArquivoAtivos(...)` grava `portfolio_ativos.txt` com a lista de ativos e o índice por símbolo
 * `gravarArquivoTransacoes(...)` grava `portfolio_transacoes.txt` com o histórico de transações e o resumo por usuário
+
+### ✔ Integração com Banco de Dados (JDBC)
+
+* `CriptoAtivo` é a classe integrada ao banco de dados (tabela `T_CRIPTOATIVO`, em SQLite)
+* `com.voltz.db.ConexaoBD` abre a conexão JDBC e garante a criação da tabela
+* `com.voltz.dao.CriptoAtivoDAO` implementa o CRUD completo:
+  * `inserir(CriptoAtivo)` — insere um novo ativo e devolve o id gerado
+  * `atualizar(CriptoAtivo)` — altera os dados de um ativo existente
+  * `excluir(int id)` — remove um ativo pelo id
+  * `buscarPorId(int id)` / `listarTodos()` — exibem os ativos cadastrados
+* `com.voltz.DemoCriptoAtivoBD` demonstra as quatro operações em sequência
 
 ---
 
@@ -126,6 +145,30 @@ java com.voltz.Main
 ```
 
 Ao executar, o programa imprime no console os ativos, transações, buscas por índice, autenticação e relatórios, além de gerar dois arquivos na raiz do projeto: `portfolio_ativos.txt` e `portfolio_transacoes.txt`.
+
+### CRUD de CriptoAtivo no Banco de Dados
+
+A integração com banco de dados usa SQLite via JDBC. O driver já está incluído em `lib/sqlite-jdbc-*.jar` — não é necessário instalar nenhum SGBD.
+
+**Compilar:**
+
+```
+javac -cp "lib/sqlite-jdbc-3.46.1.3.jar" -d out com/voltz/model/*.java com/voltz/db/*.java com/voltz/dao/*.java com/voltz/Main.java com/voltz/DemoCriptoAtivoBD.java
+```
+
+**Executar (Windows):**
+
+```
+java -cp "out;lib/sqlite-jdbc-3.46.1.3.jar" com.voltz.DemoCriptoAtivoBD
+```
+
+**Executar (Linux/Mac):**
+
+```
+java -cp "out:lib/sqlite-jdbc-3.46.1.3.jar" com.voltz.DemoCriptoAtivoBD
+```
+
+O programa cria automaticamente o arquivo `voltz.db` (SQLite) na raiz do projeto, com a tabela `T_CRIPTOATIVO`, e demonstra em sequência: inserir dois ativos, exibir a lista, alterar um ativo, excluí-lo e exibir o estado final da tabela.
 
 ---
 
