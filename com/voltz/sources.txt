@@ -1,0 +1,10 @@
+C:\Users\Akira\Desktop\Voltz\src\main\java\Main.java
+C:\Users\Akira\Desktop\Voltz\src\main\java\model\Autenticacao.java
+C:\Users\Akira\Desktop\Voltz\src\main\java\model\Carteira.java
+C:\Users\Akira\Desktop\Voltz\src\main\java\model\CriptoAtivo.java
+C:\Users\Akira\Desktop\Voltz\src\main\java\model\Empresa.java
+C:\Users\Akira\Desktop\Voltz\src\main\java\model\Permissao.java
+C:\Users\Akira\Desktop\Voltz\src\main\java\model\Pessoa.java
+C:\Users\Akira\Desktop\Voltz\src\main\java\model\Relatorio.java
+C:\Users\Akira\Desktop\Voltz\src\main\java\model\Transacao.java
+C:\Users\Akira\Desktop\Voltz\src\main\java\model\Usuario.java
