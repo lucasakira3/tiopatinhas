@@ -1,63 +1,44 @@
--- DDL para Oracle (Executar primeiro)
-
-BEGIN EXECUTE IMMEDIATE 'DROP TABLE transacao CASCADE CONSTRAINTS'; EXCEPTION WHEN OTHERS THEN NULL; END;
-/
-BEGIN EXECUTE IMMEDIATE 'DROP TABLE relatorio CASCADE CONSTRAINTS'; EXCEPTION WHEN OTHERS THEN NULL; END;
-/
-BEGIN EXECUTE IMMEDIATE 'DROP TABLE autenticacao CASCADE CONSTRAINTS'; EXCEPTION WHEN OTHERS THEN NULL; END;
-/
-BEGIN EXECUTE IMMEDIATE 'DROP TABLE carteira CASCADE CONSTRAINTS'; EXCEPTION WHEN OTHERS THEN NULL; END;
-/
-BEGIN EXECUTE IMMEDIATE 'DROP TABLE usuario CASCADE CONSTRAINTS'; EXCEPTION WHEN OTHERS THEN NULL; END;
-/
-BEGIN EXECUTE IMMEDIATE 'DROP TABLE pessoa CASCADE CONSTRAINTS'; EXCEPTION WHEN OTHERS THEN NULL; END;
-/
-BEGIN EXECUTE IMMEDIATE 'DROP TABLE empresa CASCADE CONSTRAINTS'; EXCEPTION WHEN OTHERS THEN NULL; END;
-/
-BEGIN EXECUTE IMMEDIATE 'DROP TABLE permissao CASCADE CONSTRAINTS'; EXCEPTION WHEN OTHERS THEN NULL; END;
-/
-BEGIN EXECUTE IMMEDIATE 'DROP TABLE cripto_ativo CASCADE CONSTRAINTS'; EXCEPTION WHEN OTHERS THEN NULL; END;
-/
+-- DDL para Oracle (Execução Direta no DBeaver)
 
 CREATE TABLE permissao (
-id_permissao NUMBER PRIMARY KEY,
-nome VARCHAR2(50) NOT NULL,
-descricao VARCHAR2(255)
+                           id_permissao NUMBER PRIMARY KEY,
+                           nome VARCHAR2(50) NOT NULL,
+                           descricao VARCHAR2(255)
 );
 
 CREATE TABLE pessoa (
-id_pessoa NUMBER PRIMARY KEY,
-nome VARCHAR2(100) NOT NULL,
-cpf VARCHAR2(11) UNIQUE NOT NULL,
-email VARCHAR2(100) UNIQUE NOT NULL,
-data_nascimento DATE
+                        id_pessoa NUMBER PRIMARY KEY,
+                        nome VARCHAR2(100) NOT NULL,
+                        cpf VARCHAR2(11) UNIQUE NOT NULL,
+                        email VARCHAR2(100) UNIQUE NOT NULL,
+                        data_nascimento DATE
 );
 
 CREATE TABLE empresa (
-id_empresa NUMBER PRIMARY KEY,
-razao_social VARCHAR2(150) NOT NULL,
-cnpj VARCHAR2(14) UNIQUE NOT NULL,
-email_contato VARCHAR2(100)
+                         id_empresa NUMBER PRIMARY KEY,
+                         razao_social VARCHAR2(150) NOT NULL,
+                         cnpj VARCHAR2(14) UNIQUE NOT NULL,
+                         email_contato VARCHAR2(100)
 );
 
 CREATE TABLE usuario (
-id_usuario NUMBER PRIMARY KEY,
-login VARCHAR2(50) NOT NULL UNIQUE,
-senha VARCHAR2(255) NOT NULL,
-id_pessoa NUMBER,
-id_empresa NUMBER,
-id_permissao NUMBER NOT NULL,
-status VARCHAR2(20) DEFAULT 'ATIVO',
-FOREIGN KEY (id_pessoa) REFERENCES pessoa(id_pessoa),
-FOREIGN KEY (id_empresa) REFERENCES empresa(id_empresa),
-FOREIGN KEY (id_permissao) REFERENCES permissao(id_permissao)
+                         id_usuario NUMBER PRIMARY KEY,
+                         login VARCHAR2(50) NOT NULL UNIQUE,
+                         senha VARCHAR2(255) NOT NULL,
+                         id_pessoa NUMBER,
+                         id_empresa NUMBER,
+                         id_permissao NUMBER NOT NULL,
+                         status VARCHAR2(20) DEFAULT 'ATIVO',
+                         FOREIGN KEY (id_pessoa) REFERENCES pessoa(id_pessoa),
+                         FOREIGN KEY (id_empresa) REFERENCES empresa(id_empresa),
+                         FOREIGN KEY (id_permissao) REFERENCES permissao(id_permissao)
 );
 
 CREATE TABLE cripto_ativo (
-id_cripto NUMBER PRIMARY KEY,
-nome VARCHAR2(50) NOT NULL,
-sigla VARCHAR2(10) UNIQUE NOT NULL,
-cotacao_atual NUMBER(15, 2) NOT NULL
+                              id_cripto NUMBER PRIMARY KEY,
+                              nome VARCHAR2(50) NOT NULL,
+                              sigla VARCHAR2(10) UNIQUE NOT NULL,
+                              cotacao_atual NUMBER(15, 2) NOT NULL
 );
 
 CREATE TABLE carteira (
@@ -68,30 +49,30 @@ CREATE TABLE carteira (
 );
 
 CREATE TABLE transacao (
-id_transacao NUMBER PRIMARY KEY,
-id_carteira NUMBER NOT NULL,
-id_cripto NUMBER NOT NULL,
-tipo_operacao VARCHAR2(20) NOT NULL,
-quantidade NUMBER(18, 8) NOT NULL,
-valor_unidade NUMBER(15, 2) NOT NULL,
-data_transacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-FOREIGN KEY (id_carteira) REFERENCES carteira(id_carteira),
-FOREIGN KEY (id_cripto) REFERENCES cripto_ativo(id_cripto)
+                           id_transacao NUMBER PRIMARY KEY,
+                           id_carteira NUMBER NOT NULL,
+                           id_cripto NUMBER NOT NULL,
+                           tipo_operacao VARCHAR2(20) NOT NULL,
+                           quantidade NUMBER(18, 8) NOT NULL,
+                           valor_unidade NUMBER(15, 2) NOT NULL,
+                           data_transacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                           FOREIGN KEY (id_carteira) REFERENCES carteira(id_carteira),
+                           FOREIGN KEY (id_cripto) REFERENCES cripto_ativo(id_cripto)
 );
 
 CREATE TABLE autenticacao (
-id_autenticacao NUMBER PRIMARY KEY,
-id_usuario NUMBER NOT NULL,
-token_sessao VARCHAR2(255) NOT NULL,
-data_login TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-ip_origem VARCHAR2(45),
-FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario)
+                              id_autenticacao NUMBER PRIMARY KEY,
+                              id_usuario NUMBER NOT NULL,
+                              token_sessao VARCHAR2(255) NOT NULL,
+                              data_login TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                              ip_origem VARCHAR2(45),
+                              FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario)
 );
 
 CREATE TABLE relatorio (
-id_relatorio NUMBER PRIMARY KEY,
-id_usuario NUMBER NOT NULL,
-tipo_relatorio VARCHAR2(50) NOT NULL,
-data_geracao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario)
+                           id_relatorio NUMBER PRIMARY KEY,
+                           id_usuario NUMBER NOT NULL,
+                           tipo_relatorio VARCHAR2(50) NOT NULL,
+                           data_geracao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                           FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario)
 );

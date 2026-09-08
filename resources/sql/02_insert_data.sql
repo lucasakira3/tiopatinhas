@@ -1,4 +1,18 @@
 -- =====
+-- 0. Limpeza preventiva de dados (Garante coesão ao reexecutar)
+-- =====
+DELETE FROM relatorio;
+DELETE FROM autenticacao;
+DELETE FROM transacao;
+DELETE FROM carteira;
+DELETE FROM usuario;
+DELETE FROM empresa;
+DELETE FROM pessoa;
+DELETE FROM permissao;
+DELETE FROM cripto_ativo;
+COMMIT;
+
+-- =====
 -- 1. Inserts (Dados iniciais)
 -- =====
 
@@ -42,17 +56,14 @@ COMMIT;
 -- 2. Updates
 -- =====
 
--- Atualizando a cotação de um CriptoAtivo
 UPDATE cripto_ativo
 SET cotacao_atual = 320000.00
 WHERE sigla = 'BTC';
 
--- Descontando o saldo em reais da carteira
 UPDATE carteira
 SET saldo_reais = saldo_reais - 36500.00
 WHERE id_usuario = 2;
 
--- Inativando um usuário por segurança
 UPDATE usuario
 SET status = 'INATIVO'
 WHERE login = 'carlos_invest';
@@ -60,51 +71,13 @@ WHERE login = 'carlos_invest';
 COMMIT;
 
 -- =====
--- 3. DELETES (Exclusão de registros)
+-- 3. Deletes
 -- =====
 
--- Excluindo tokens de sessão de usuários inativos
 DELETE FROM autenticacao
 WHERE id_usuario IN (SELECT id_usuario FROM usuario WHERE status = 'INATIVO');
 
--- Deletando um relatório obsoleto gerado erroneamente
 DELETE FROM relatorio
 WHERE id_relatorio = 1;
 
 COMMIT;
-
--- =====
--- 4. SELECTS (Consultas de validação e relatórios)
--- =====
-
--- Consulta 1: Listar o portfólio completo de transações da Patrícia
-SELECT
-    p.nome AS investidor,
-    ca.nome AS criptoativo,
-    t.tipo_operacao,
-    t.quantidade,
-    t.valor_unidade,
-    (t.quantidade * t.valor_unidade) AS valor_total_operacao
-FROM transacao t
-         INNER JOIN carteira c ON t.id_carteira = c.id_carteira
-         INNER JOIN usuario u ON c.id_usuario = u.id_usuario
-         INNER JOIN pessoa p ON u.id_pessoa = p.id_pessoa
-         INNER JOIN cripto_ativo ca ON t.id_cripto = ca.id_cripto
-WHERE u.login = 'pat_invest';
-
--- Consulta 2: Verificar o saldo em reais disponível nas carteiras de usuários ativos
-SELECT
-    u.login,
-    c.saldo_reais
-FROM carteira c
-         INNER JOIN usuario u ON c.id_usuario = u.id_usuario
-WHERE u.status = 'ATIVO';
-
--- Consulta 3: Visualizar as moedas com cotação superior a 100 reais, ordenadas pela mais cara
-SELECT
-    sigla,
-    nome,
-    cotacao_atual
-FROM cripto_ativo
-WHERE cotacao_atual > 100.00
-ORDER BY cotacao_atual DESC;
