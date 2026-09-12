@@ -1,5 +1,6 @@
 package com.voltz;
 
+import com.voltz.dao.CriptoAtivoDAO;
 import com.voltz.model.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,6 +10,7 @@ import java.time.format.DateTimeFormatter;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.sql.SQLException;
 
 public class Main {
     public static void main(String[] args) {
@@ -125,6 +127,13 @@ public class Main {
             gravarArquivoAtivos(ativos, ativosPorSimbolo);
             gravarArquivoTransacoes(transacoes, usuariosPorEmail, fmt);
 
+            // -------------------------------------------------------
+            // INTEGRAÇÃO COM BANCO DE DADOS ORACLE (FIAP)
+            // Testa inserir, alterar, excluir e exibir usando CriptoAtivoDAO,
+            // que se conecta via ConnectionFactory (com.voltz.factory).
+            // -------------------------------------------------------
+            testarCrudCriptoAtivo();
+
             System.out.println("\n=======================================");
             System.out.println("     SISTEMA EXECUTADO COM SUCESSO     ");
             System.out.println("=======================================\n");
@@ -132,6 +141,66 @@ public class Main {
         } catch (Exception e) {
             System.out.println("ERRO: " + e.getMessage());
         }
+    }
+
+    // -------------------------------------------------------
+    // Testa a integração de CriptoAtivo com o Banco de Dados Oracle da FIAP,
+    // exercitando as quatro operações de CRUD através do CriptoAtivoDAO:
+    // inserir, alterar (atualizar), excluir e exibir (buscar/listar).
+    // -------------------------------------------------------
+
+    private static void testarCrudCriptoAtivo() throws SQLException {
+        System.out.println("\n=======================================");
+        System.out.println("  CRUD DE CRIPTOATIVO NO BANCO ORACLE   ");
+        System.out.println("=======================================\n");
+
+        CriptoAtivoDAO dao = new CriptoAtivoDAO();
+
+        // --------------------------------------------------
+        // CREATE — inserir novos ativos
+        // --------------------------------------------------
+        CriptoAtivo bitcoin = dao.inserir(new CriptoAtivo("Bitcoin", "BTC", 0, 350000.0));
+        CriptoAtivo ethereum = dao.inserir(new CriptoAtivo("Ethereum", "ETH", 0, 18000.0));
+        System.out.println("[INSERIR] " + bitcoin);
+        System.out.println("[INSERIR] " + ethereum);
+
+        // --------------------------------------------------
+        // READ — exibir todos os ativos cadastrados
+        // --------------------------------------------------
+        System.out.println("\n[EXIBIR] Ativos cadastrados no banco Oracle:");
+        for (CriptoAtivo ativo : dao.listarTodos()) {
+            System.out.println("  " + ativo);
+        }
+
+        // --------------------------------------------------
+        // UPDATE — alterar a cotação do Ethereum
+        // --------------------------------------------------
+        ethereum.setValorAtual(19500.0);
+        boolean atualizado = dao.atualizar(ethereum);
+        System.out.println("\n[ALTERAR] Ethereum atualizado: " + atualizado);
+        System.out.println("  " + dao.buscarPorId(ethereum.getId()));
+
+        // --------------------------------------------------
+        // DELETE — excluir o Bitcoin
+        // --------------------------------------------------
+        boolean excluido = dao.excluir(bitcoin.getId());
+        System.out.println("\n[EXCLUIR] Bitcoin removido: " + excluido);
+
+        // --------------------------------------------------
+        // READ — exibir estado final da tabela
+        // --------------------------------------------------
+        System.out.println("\n[EXIBIR] Estado final da tabela cripto_ativo:");
+        List<CriptoAtivo> restantes = dao.listarTodos();
+        if (restantes.isEmpty()) {
+            System.out.println("  (nenhum ativo cadastrado)");
+        }
+        for (CriptoAtivo ativo : restantes) {
+            System.out.println("  " + ativo);
+        }
+
+        System.out.println("\n=======================================");
+        System.out.println("        CRUD EXECUTADO COM SUCESSO      ");
+        System.out.println("=======================================\n");
     }
 
     // -------------------------------------------------------
@@ -174,6 +243,7 @@ public class Main {
     // -------------------------------------------------------
     // Grava portfolio_transacoes.txt a partir do ArrayList e HashMap
     // -------------------------------------------------------
+    
     private static void gravarArquivoTransacoes(ArrayList<Transacao> transacoes,
                                                 HashMap<String, Usuario> usuariosPorEmail,
                                                 DateTimeFormatter fmt) {
