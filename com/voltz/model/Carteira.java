@@ -1,43 +1,59 @@
 package com.voltz.model;
 
-import java.util.List;
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.List;
 
+/** Espelha a tabela CARTEIRA (id_carteira, id_usuario, saldo_reais). */
 public class Carteira {
 
-    private String nome;
-    private List<CriptoAtivo> ativos;
-    private List<Transacao> transacoes;
+    private int idCarteira;
+    private int idUsuario;
+    private BigDecimal saldoReais;
+    private List<Transacao> transacoes = new ArrayList<>(); // apoio em memória (não é coluna)
 
-    public Carteira(String nome, List<CriptoAtivo> ativos, List<Transacao> transacoes) {
-        this.nome = nome;
-        this.ativos = (ativos != null) ? ativos : new ArrayList<>();
-        this.transacoes = (transacoes != null) ? transacoes : new ArrayList<>();
+    public Carteira(int idUsuario, BigDecimal saldoReais) {
+        this(0, idUsuario, saldoReais);
     }
 
-    public void adicionarAtivo(CriptoAtivo ativo) {
-        this.ativos.add(ativo);
+    public Carteira(int idCarteira, int idUsuario, BigDecimal saldoReais) {
+        this.idCarteira = idCarteira;
+        this.idUsuario = idUsuario;
+        this.saldoReais = saldoReais;
+    }
+
+    public void creditar(BigDecimal valor) {
+        if (valor.signum() <= 0) throw new IllegalArgumentException("Valor deve ser positivo.");
+        saldoReais = saldoReais.add(valor);
+    }
+
+    public void debitar(BigDecimal valor) {
+        if (valor.signum() <= 0) throw new IllegalArgumentException("Valor deve ser positivo.");
+        if (saldoReais.compareTo(valor) < 0) {
+            throw new IllegalStateException(String.format(
+                    "Saldo insuficiente: disponível R$ %.2f, necessário R$ %.2f", saldoReais, valor));
+        }
+        saldoReais = saldoReais.subtract(valor);
     }
 
     public void adicionarTransacao(Transacao transacao) {
-        this.transacoes.add(transacao);
+        transacoes.add(transacao);
     }
 
-    // Getters
-    public String getNome() { return nome; }
-    public List<CriptoAtivo> getAtivos() { return ativos; }
+    public int getIdCarteira() { return idCarteira; }
+    public void setIdCarteira(int idCarteira) { this.idCarteira = idCarteira; }
+
+    public int getIdUsuario() { return idUsuario; }
+    public void setIdUsuario(int idUsuario) { this.idUsuario = idUsuario; }
+
+    public BigDecimal getSaldoReais() { return saldoReais; }
+    public void setSaldoReais(BigDecimal saldoReais) { this.saldoReais = saldoReais; }
+
     public List<Transacao> getTransacoes() { return transacoes; }
+    public void setTransacoes(List<Transacao> transacoes) { this.transacoes = transacoes; }
 
-    // Setters
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    public void setAtivos(List<CriptoAtivo> ativos) {
-        this.ativos = ativos;
-    }
-
-    public void setTransacoes(List<Transacao> transacoes) {
-        this.transacoes = transacoes;
+    @Override
+    public String toString() {
+        return String.format("Carteira [%d] usuário %d | Saldo: R$ %.2f", idCarteira, idUsuario, saldoReais);
     }
 }

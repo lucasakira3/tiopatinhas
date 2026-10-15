@@ -26,7 +26,20 @@
     </dependencies>
 
     <build>
+        <!-- Fontes na raiz do projeto (com/voltz/...), igual à estrutura original -->
+        <sourceDirectory>${project.basedir}</sourceDirectory>
+        
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.11.0</version>
+                <configuration>
+                    <includes>
+                        <include>com/**/*.java</include>
+                    </includes>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>

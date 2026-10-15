@@ -1,45 +1,41 @@
 package com.voltz.model;
 
-import java.util.List;
-import java.util.ArrayList;
-
+/** Espelha a tabela EMPRESA (id_empresa, razao_social, cnpj, email_contato). */
 public class Empresa {
 
-    private String nome;
+    private int idEmpresa;
+    private String razaoSocial;
     private String cnpj;
-    private List<Carteira> carteiras;
+    private String emailContato;
 
-    public Empresa(String nome, String cnpj, List<Carteira> carteiras) {
-        this.nome = nome;
+    public Empresa() {
+    }
+
+    public Empresa(String razaoSocial, String cnpj, String emailContato) {
+        this(0, razaoSocial, cnpj, emailContato);
+    }
+
+    public Empresa(int idEmpresa, String razaoSocial, String cnpj, String emailContato) {
+        this.idEmpresa = idEmpresa;
+        this.razaoSocial = razaoSocial;
         this.cnpj = cnpj;
-        this.carteiras = (carteiras != null) ? carteiras : new ArrayList<>();
+        this.emailContato = emailContato;
     }
 
-    // construtor simples
-    public Empresa(String nome) {
-        this.nome = nome;
-        this.carteiras = new ArrayList<>();
-    }
+    public int getIdEmpresa() { return idEmpresa; }
+    public void setIdEmpresa(int idEmpresa) { this.idEmpresa = idEmpresa; }
 
-    public void adicionarCarteira(Carteira carteira) {
-        this.carteiras.add(carteira);
-    }
+    public String getRazaoSocial() { return razaoSocial; }
+    public void setRazaoSocial(String razaoSocial) { this.razaoSocial = razaoSocial; }
 
-    // Getters
-    public String getNome() { return nome; }
     public String getCnpj() { return cnpj; }
-    public List<Carteira> getCarteiras() { return carteiras; }
+    public void setCnpj(String cnpj) { this.cnpj = cnpj; }
 
-    // Setters
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
+    public String getEmailContato() { return emailContato; }
+    public void setEmailContato(String emailContato) { this.emailContato = emailContato; }
 
-    public void setCnpj(String cnpj) {
-        this.cnpj = cnpj;
-    }
-
-    public void setCarteiras(List<Carteira> carteiras) {
-        this.carteiras = carteiras;
+    @Override
+    public String toString() {
+        return "[" + idEmpresa + "] " + razaoSocial + " | CNPJ: " + cnpj + " | " + emailContato;
     }
 }

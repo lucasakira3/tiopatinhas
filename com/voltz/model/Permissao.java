@@ -1,24 +1,37 @@
 package com.voltz.model;
 
-public enum Permissao {
+/** Espelha a tabela PERMISSAO (id_permissao, nome, descricao). */
+public class Permissao {
 
-    ADMIN_GERAL("Administrador Geral"),
-    ADMIN_EMPRESARIAL("Administrador Empresarial"),
-    INVESTIDOR("Investidor"),
-    VISUALIZADOR("Visualizador");
-
+    private int idPermissao;
+    private String nome;
     private String descricao;
 
-    Permissao(String descricao) {
+    public Permissao() {
+    }
+
+    public Permissao(String nome, String descricao) {
+        this.nome = nome;
         this.descricao = descricao;
     }
 
-    public String getDescricao() {
-        return descricao;
+    public Permissao(int idPermissao, String nome, String descricao) {
+        this.idPermissao = idPermissao;
+        this.nome = nome;
+        this.descricao = descricao;
     }
+
+    public int getIdPermissao() { return idPermissao; }
+    public void setIdPermissao(int idPermissao) { this.idPermissao = idPermissao; }
+
+    public String getNome() { return nome; }
+    public void setNome(String nome) { this.nome = nome; }
+
+    public String getDescricao() { return descricao; }
+    public void setDescricao(String descricao) { this.descricao = descricao; }
 
     @Override
     public String toString() {
-        return descricao;
+        return "[" + idPermissao + "] " + nome + " - " + descricao;
     }
 }

@@ -1,63 +1,46 @@
 package com.voltz.model;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
+/** Espelha a tabela CRIPTO_ATIVO (id_cripto, nome, sigla, cotacao_atual). */
 public class CriptoAtivo {
 
-    private int id; // PK (gerado pelo banco de dados)
+    private int id;
     private String nome;
     private String simbolo;
-    private double quantidade;
-    private double valorAtual;
+    private BigDecimal valorAtual; // cotacao_atual
 
-    public CriptoAtivo(String nome, String simbolo, double quantidade, double valorAtual) {
-        this.nome = nome;
-        this.simbolo = simbolo;
-        this.quantidade = quantidade;
-        this.valorAtual = valorAtual;
+    public CriptoAtivo(String nome, String simbolo, BigDecimal valorAtual) {
+        this(0, nome, simbolo, valorAtual);
     }
 
-    public CriptoAtivo(int id, String nome, String simbolo, double quantidade, double valorAtual) {
+    public CriptoAtivo(int id, String nome, String simbolo, BigDecimal valorAtual) {
         this.id = id;
         this.nome = nome;
         this.simbolo = simbolo;
-        this.quantidade = quantidade;
         this.valorAtual = valorAtual;
     }
 
-    public double calcularValorTotal() {
-        return quantidade * valorAtual;
+    /** Valor de mercado de uma certa quantidade deste ativo. */
+    public BigDecimal calcularValorTotal(BigDecimal quantidade) {
+        return quantidade.multiply(valorAtual).setScale(2, RoundingMode.HALF_UP);
     }
 
-    // Getters
     public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
+
     public String getNome() { return nome; }
+    public void setNome(String nome) { this.nome = nome; }
+
     public String getSimbolo() { return simbolo; }
-    public double getQuantidade() { return quantidade; }
-    public double getValorAtual() { return valorAtual; }
+    public void setSimbolo(String simbolo) { this.simbolo = simbolo; }
 
-    // Setters
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    public void setSimbolo(String simbolo) {
-        this.simbolo = simbolo;
-    }
-
-    public void setQuantidade(double quantidade) {
-        this.quantidade = quantidade;
-    }
-
-    public void setValorAtual(double valorAtual) {
-        this.valorAtual = valorAtual;
-    }
+    public BigDecimal getValorAtual() { return valorAtual; }
+    public void setValorAtual(BigDecimal valorAtual) { this.valorAtual = valorAtual; }
 
     @Override
     public String toString() {
-        return String.format("[%d] %s (%s) | Qtd: %.4f | Valor unit.: R$ %.2f | Total: R$ %.2f",
-            id, nome, simbolo, quantidade, valorAtual, calcularValorTotal());
+        return String.format("[%d] %s (%s) | Cotação: R$ %.2f", id, nome, simbolo, valorAtual);
     }
 }

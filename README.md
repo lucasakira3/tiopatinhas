@@ -9,7 +9,7 @@ conexão, camada **DAO** e CRUD (INSERT, UPDATE, DELETE, SELECT) para **todas as
 
 ```
 tiopatinhas/
-├── src/main/java/com/voltz/
+├── com/voltz/
 │   ├── Main.java                      # Teste de integração com o Oracle (as 9 tabelas)
 │   ├── factory/
 │   │   └── ConnectionFactory.java     # Conexão com o Oracle FIAP (credenciais fora do código)
@@ -28,7 +28,9 @@ tiopatinhas/
 │   ├── 02_insert_data.sql             # Carga inicial, UPDATEs e DELETEs de manutenção
 │   └── 03_queries.sql                 # SELECTs de consulta
 ├── db.properties.example              # Modelo do arquivo de credenciais
-├── pom.xml                            # Maven (ojdbc8) — fontes em src/main/java
+├── docs/                              # Dicionário de dados, MER e normalização (PDF)
+├── lib/
+├── pom.xml                            # Maven (ojdbc8) — fontes em com/voltz
 └── README.md
 ```
 
@@ -94,7 +96,7 @@ mvn compile
 mvn exec:java        # roda com.voltz.Main  (integração com o Oracle)
 ```
 
-Sem Maven: compile os fontes de `src/main/java` com o `ojdbc8.jar` no classpath e execute `com.voltz.Main`.
+Sem Maven: compile os fontes de `com/voltz` com o `ojdbc8.jar` no classpath e execute `com.voltz.Main`.
 
 ### O que o `Main` faz
 
