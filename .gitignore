@@ -1,6 +1,13 @@
+# IDE
+.idea/
+*.iml
+.vscode/
 .claude/
+
+# Build
+target/
 out/
 *.class
-voltz.db
-portfolio_ativos.txt
-portfolio_transacoes.txt
+
+# Credenciais e arquivos gerados em execução
+db.properties

@@ -1,0 +1,6 @@
+# Copie este arquivo para "db.properties" (mesma pasta de onde o programa é executado)
+# e preencha com o seu RM e senha do Oracle FIAP. O db.properties NÃO vai para o Git.
+db.user=rmXXXXX
+db.password=sua_senha_fiap
+# Opcional (já é o padrão):
+# db.url=jdbc:oracle:thin:@oracle.fiap.com.br:1521:ORCL
